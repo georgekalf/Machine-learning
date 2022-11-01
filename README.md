@@ -1,5 +1,8 @@
 ![banner image](https://www.wordstream.com/wp-content/uploads/2021/07/machine-learning1-1.png)
 
 
-## Applying machine learning methods to different datasets & for different purposes
+## Unsupervised Machine Learning methods 
 
+Machine learning is a subfield of artificial intelligence, which is broadly defined as the capability of a machine to imitate intelligent human behavior. Artificial intelligence systems are used to perform complex tasks in a way that is similar to how humans solve problems.
+
+Using R for unsupervised learning such as dimensionality reduction and clustering, and building and comparing different supervised classifiers.
