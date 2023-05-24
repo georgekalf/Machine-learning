@@ -72,7 +72,8 @@ error_rate_dt_pruned
 ### --- Caret for random forest --- ###
 
 fitControl = trainControl(method = "cv", 
-                         number = 5)
+                         number = 5,
+                         repeats = 1)
 set.seed(2) 
 rfFit = train(Class ~ ., data = train, method = "rf",
             metric = "Accuracy",
@@ -103,7 +104,6 @@ roc_dt = plot(roc(as.numeric(test.actual), as.numeric(pred.dt.pruned)), print.au
 
 roc_rf = plot(roc(as.numeric(test.actual), as.numeric(pred.rf)), print.auc = TRUE, 
                col = "blue", print.auc.y = .4, add = TRUE)
-
 
 # ---+ plotting ROC plot
 
