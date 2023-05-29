@@ -101,7 +101,7 @@ error_rate_rf
 pred_dt_prob <- predict(credit.prune, test, type = "prob")[, 2] # specified type = "prob" to get predicted probabilities
 mean(as.numeric(pred.dt.pruned) > 0.5) == as.numeric(test.actual) # calculating accuravcy based on probability cutoff of 0.5
 
-pred_rf_prob <- predict(rfFit, test, type = "prob")
+pred_rf_prob <- predict(rfFit, test, type = "prob")[, 2]
 
 # ---+ creating the roc curves
 
