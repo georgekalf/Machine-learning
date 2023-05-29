@@ -1,6 +1,6 @@
 #### --- Question 1 --- ####
 
-# ---+ loading the libraries 
+# ---+ loading the libraries
 library(caret)
 library(dplyr)
 library(tree)
@@ -18,7 +18,7 @@ str(GermanCredit) # ---+ the response variable is already a Factor
 
 # ---+ data cleaning
 # ---+ delete two variables where all values are the same for both classes
-GermanCredit[, c("Purpose.Vacation","Personal.Female.Single")] <- list(NULL)
+GermanCredit[, c("Purpose.Vacation", "Personal.Female.Single")] <- list(NULL)
 
 ### --- Decision Tree --- ### 
 # ---+ random split to train and test sets
@@ -29,7 +29,7 @@ test = GermanCredit[-trainIndex,]
 test.actual = GermanCredit$Class[-trainIndex] # test labels
 
 # ---+ train the decision tree
-credit.tree = tree(Class ~ . , train)
+credit.tree = tree(Class ~ ., train)
 summary(credit.tree)
 
 # ---+ looking at the details of the tree
