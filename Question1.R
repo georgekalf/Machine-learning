@@ -3,7 +3,6 @@
 # ---+ loading the libraries
 library(caret)
 library(dplyr)
-library(rpart)
 library(tree)
 library(randomForest)
 library(gbm)
@@ -15,7 +14,7 @@ data(GermanCredit)
 # ---+ classify two status: good or bad
 
 # ---+ checking the values of our dataset
-str(GermanCredit) # ---+ the response variable is already a Factor
+str(GermanCredit) # ---+ checking the response variable if it is a Factor or not
 
 # ---+ data cleaning
 # ---+ delete two variables where all values are the same for both classes
@@ -31,7 +30,6 @@ test.actual <- GermanCredit$Class[-trainIndex] # test labels
 
 # ---+ train the decision tree
 credit.tree <- tree(Class ~ ., train)
-summary(credit.tree)
 
 # ---+ looking at the details of the tree
 credit.tree
@@ -44,13 +42,11 @@ summary(credit.tree)
 # ---+ predict the test instances before pruning
 pred.dt <- predict(credit.tree, test, type = "class")
 mean(pred.dt == test.actual)
-error_rate_dt <- 1 - mean(pred.dt == test.actual)
-error_rate_dt
+print(error_rate_dt <- 1 - mean(pred.dt == test.actual))
 
 ### --- Pruning the decision Tree --- ###
 set.seed(102)
 credit.cv <- cv.tree(credit.tree, FUN = prune.misclass, K = 5)
-credit.cv
 
 # ---+ plotting CV results
 par(mfrow = c(1, 1))
@@ -67,8 +63,7 @@ summary(credit.prune)
 # ---+ predict the test instances after pruning
 pred.dt.pruned <- predict(credit.prune, test, type = "class")
 mean(pred.dt.pruned == test.actual)
-error_rate_dt_pruned <- 1 - mean(pred.dt.pruned == test.actual)
-error_rate_dt_pruned
+print(error_rate_dt_pruned <- 1 - mean(pred.dt.pruned == test.actual))
 
 ### --- Caret for random forest --- ###
 
@@ -85,36 +80,37 @@ rfFit <- train(Class ~ ., data = train, method = "rf",
 rfFit
 plot(rfFit)
 rfFit$finalModel
-variable_imp <- varImp(rfFit, scale = TRUE)
 
 # ---+ plot the Variable Importance
 
+variable_imp <- varImp(rfFit, scale = TRUE)
 plot(variable_imp, top = 15)
 
 # ---+ predict the test instances
 pred.rf <- predict(rfFit, test)
 mean(pred.rf == test.actual)
-error_rate_rf <- 1 - mean(pred.rf == test.actual)
-error_rate_rf
+print(error_rate_rf <- 1 - mean(pred.rf == test.actual))
 
 # ---+ predicting probalities for random & decision tree
-pred_dt_prob <- predict(credit.prune, test, type = "prob")[, 2] # specified type = "prob" to get predicted probabilities
+pred_dt_prob <- predict(credit.prune, test, type = "vector")[, 2] # predict probabilties for test instances after pruning
 mean(as.numeric(pred.dt.pruned) > 0.5) == as.numeric(test.actual) # calculating accuravcy based on probability cutoff of 0.5
 
 pred_rf_prob <- predict(rfFit, test, type = "prob")[, 2]
+mean(as.numeric(pred_rf_prob) > 0.5) == as.numeric(test.actual)
 
 # ---+ creating the roc curves
 
-roc_dt <- plot(roc(as.numeric(test.actual),
-                   as.numeric(pred.dt.pruned)),
-                   print.auc = TRUE,
-                   col = "green", print.auc.y = .4, add = TRUE)
+dev.off() # ---+ cleaning previous plots
 
+roc_dt <- plot(roc(as.numeric(test.actual),
+                   pred_dt_prob),
+                   print.auc = TRUE,
+                   col = "green", print.auc.y = .4)
 
 roc_rf <- plot(roc(as.numeric(test.actual),
                    pred_rf_prob),
                    print.auc = TRUE,
-               col = "blue", print.auc.y = .4, add = TRUE)
+                   col = "blue", print.auc.y = .4)
 
 # ---+ plotting ROC plot
 
@@ -124,7 +120,7 @@ gl <- ggroc(list("AUC for Decision Tree" = roc_dt,
 
 gl + xlab("False Positive Rate (1 - Specificity)") +
   ylab("True Positive Rate (Sensitivity)") +
-  annotate("text", x = 0.48, y = 0.85, label = "AUC for RF: 0.6389") +
-  annotate("text", x = 0.75, y = 0.84, label = "AUC for DT: 0.6024") +
+  annotate("text", x = 0.38, y = 0.85, label = "AUC for Random Forest: 0.7781") +
+  annotate("text", x = 0.75, y = 0.84, label = "AUC for Decision Tree: 0.6851") +
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1),
   color = "darkgrey", linetype = "dashed")
