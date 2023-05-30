@@ -1,7 +1,7 @@
 ### --- Question 3 --- ###
 
 # ---+ loading the dataset
-data <- read.table("newthyroid.txt", header = TRUE, sep = ",")
+data <- read.table("Files/newthyroid.txt", header = TRUE, sep = ",")
 
 # ---+ check missing values
 sum(is.na(data))
@@ -54,11 +54,11 @@ for (i in seeds){
                  tuneGrid = gridlevel)
 
   # ---+ prediction for kNN
-
   pred_knn <- predict(knnFit, test.feature)
+  pred_knn_prob <- predict(knnFit, test.feature, type = "prob")
   acc_knn <- mean(pred_knn == test.label)
   accuracy_knn <- c(accuracy_knn, acc_knn)
-  roc.knn <- roc(as.factor(test.label), as.numeric(pred_knn))
+  roc.knn <- roc(as.factor(test.label), as.vector(pred_knn_prob[, 2]))
   auc_knn <- c(auc_knn, as.numeric(roc.knn$auc))
 
   ### --- LDA use --- ####
@@ -70,9 +70,10 @@ for (i in seeds){
 
   # ---+ prediction for LDA
    pred_lda <- predict(ldaFit, test.feature)
+   pred_lda_prob <- predict(ldaFit, test.feature, type = "prob")
    acc_lda <- mean(pred_lda == test.label)
    accuracy_lda <- c(accuracy_lda, acc_lda)
-   roc.lda <- roc(as.factor(test.label), as.numeric(pred_lda))
+   roc.lda <- roc(as.factor(test.label), as.vector(pred_lda_prob[, 2]))
    auc_lda <- c(auc_lda, as.numeric(roc.lda$auc))
 }
 
