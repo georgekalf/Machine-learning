@@ -5,7 +5,7 @@
 
 Machine learning is a subfield of artificial intelligence, which is broadly defined as the capability of a machine to imitate intelligent human behavior. Artificial intelligence systems are used to perform complex tasks in a way that is similar to how humans solve problems.
 
-Using R for unsupervised learning such as dimensionality reduction and clustering, and building and comparing different supervised classifiers.
+Using R for unsupervised learning such as dimensionality reduction, & clustering. The different practices are also for building, & comparing different supervised classifiers.
 
 ## Practice 1
 
